@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.teleop;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-
+import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Hardware;
 import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Shooter;
 
 public class Methods {

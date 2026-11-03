@@ -13,10 +13,10 @@ public class Hardware {
     public Servo limiter;
     public Hardware(HardwareMap hwMap) {
         // Drive train
-        leftFront = hwMap.get(DcMotorEx.class, "LeftFrontMotor");
-        leftBack = hwMap.get(DcMotorEx.class, "LeftBackMotor");
-        rightFront = hwMap.get(DcMotorEx.class, "RightFrontMotor");
-        rightBack = hwMap.get(DcMotorEx.class, "RightBackMotor");
+        leftFront = hwMap.get(DcMotorEx.class, "FL");
+        leftBack = hwMap.get(DcMotorEx.class, "BL");
+        rightFront = hwMap.get(DcMotorEx.class, "FR");
+        rightBack = hwMap.get(DcMotorEx.class, "BR");
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);

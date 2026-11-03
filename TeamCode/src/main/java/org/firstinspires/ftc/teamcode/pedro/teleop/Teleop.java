@@ -13,52 +13,62 @@ import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Hardware;
 import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Shooter;
 
 @Config
-@TeleOp(name = "Teleop", group = "Teleop")
+@TeleOp(name = "Teleop-biobust", group = "Teleop")
 public class Teleop extends OpMode {
 
     public Hardware hardware;
-    public Follower follower;
+//    public Follower follower;
     private Methods flywheelPID;
     private Methods methods;
 
     @Override
     public void init() {
         hardware = new Hardware(hardwareMap);
-        flywheelPID = new Methods();
-        methods = new Methods();
+//        flywheelPID = new Methods();
+//        methods = new Methods();
     }
 
     @Override
     public void loop() {
-        follower.update();
-        follower.manual(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x,
-                -gamepad1.right_stick_x*3/4
+//        follower.update();
+//        follower.manual(
+//                -gamepad1.left_stick_y,
+//                -gamepad1.left_stick_x,
+//                -gamepad1.right_stick_x*3/4
+//
+//        );
+//        if (gamepad1.leftBumperWasPressed() && Values.mode== Values.Modes.SHOOTING){
+//            Values.init = true;
+//            Values.mode=Values.Modes.INTAKING;
+//        }
+//        if ((gamepad1.rightBumperWasPressed() && Values.mode == Values.Modes. INTAKING)){
+//
+//            Values.init=true;
+//            Values.mode = Values.Modes.SHOOTING;
+//        }
+//        switch (Values.mode){
+//            case INTAKING:
+//                hardware.intake.setPower(1);
+//                hardware.transfer.setPower(1);
+//                hardware.limiter.setPosition(Values.LIMITER_CLOSED);
+//                break;
+//            case SHOOTING:
+//                hardware.limiter.setPosition(Values.LIMITER_OPEN);
+//                hardware.intake.setPower(0);
+//                hardware.transfer.setPower(0);
+//                break;
+//        }
 
-        );
-        if (gamepad1.leftBumperWasPressed() && Values.mode== Values.Modes.SHOOTING){
-            Values.init = true;
-            Values.mode=Values.Modes.INTAKING;
-        }
-        if ((gamepad1.rightBumperWasPressed() && Values.mode == Values.Modes. INTAKING)){
+        double y = -gamepad1.left_stick_y;
+        double x = gamepad1.left_stick_x * 1.1;
+        double rx = gamepad1.right_stick_x;
+        double denom = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1.0);
 
-            Values.init=true;
-            Values.mode = Values.Modes.SHOOTING;
-        }
-        switch (Values.mode){
-            case INTAKING:
-                hardware.intake.setPower(1);
-                hardware.transfer.setPower(1);
-                hardware.limiter.setPosition(Values.LIMITER_CLOSED);
-                break;
-            case SHOOTING:
-                hardware.limiter.setPosition(Values.LIMITER_OPEN);
-                hardware.intake.setPower(0);
-                hardware.transfer.setPower(0);
-                break;
-        }
+        hardware.leftFront.setPower((y + x + rx) / denom);
+        hardware.leftBack.setPower((y + x - rx) / denom);
+        hardware.rightFront.setPower((y - x - rx) / denom);
+        hardware.rightBack.setPower((y - x + rx) / denom);
 
-        double curr = flywheelPID.flywheelFFTele(hardware.flywheel,Shooter.flywheel_Values.flywheelTarget);
+//        double curr = flywheelPID.flywheelFFTele(hardware.flywheel,Shooter.flywheel_Values.flywheelTarget);
     }
 }
