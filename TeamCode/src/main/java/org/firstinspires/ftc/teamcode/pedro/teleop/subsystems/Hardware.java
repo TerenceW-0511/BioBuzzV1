@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.teleop.subsystems;
 
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,8 +12,15 @@ public class Hardware {
     public DcMotorEx flywheel;
     public Servo limiter;
 
+    public Servo hood;
+
+    public Servo turret1,turret2;
+
+    public DcMotorEx turret;
+    public GoBildaPinpointDriver pp;
+
     public Hardware(HardwareMap hwMap) {
-        // Drive train
+        /// Drive train
         leftFront = hwMap.get(DcMotorEx.class, "FL");
         leftBack = hwMap.get(DcMotorEx.class, "BL");
         rightFront = hwMap.get(DcMotorEx.class, "FR");
@@ -30,21 +38,29 @@ public class Hardware {
         leftBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightFront.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         rightBack.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        ///
 
-        // Intake
         intake = hwMap.get(DcMotorEx.class, "Intake");
         intake.setDirection(DcMotorEx.Direction.REVERSE);
         intake.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Transfer
+
         transfer = hwMap.get(DcMotorEx.class, "Transfer");
         transfer.setDirection(DcMotorEx.Direction.REVERSE);
         transfer.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Flywheel
+
         flywheel = hwMap.get(DcMotorEx.class, "Flywheel");
         flywheel.setDirection(DcMotorEx.Direction.REVERSE);
+        flywheel.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-//        limiter = hwMap.get(Servo.class, "Limiter");
+
+        limiter = hwMap.get(Servo.class, "Limiter");
+        hood = hwMap.get(Servo.class, "Hood");
+
+//        pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        turret = hwMap.get(DcMotorEx.class, "Turret");
+        turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
     }
 }
