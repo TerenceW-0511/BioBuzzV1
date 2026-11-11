@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+
 public class Hardware {
     public DcMotorEx leftFront, rightFront, leftBack, rightBack;
     public DcMotorEx intake, transfer;
@@ -62,5 +63,8 @@ public class Hardware {
         turret = hwMap.get(DcMotorEx.class, "Turret");
         turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
+        turret1 = hwMap.get(Servo.class, "Turret1");
+        turret2 = hwMap.get(Servo.class, "Turret2");
     }
 }
