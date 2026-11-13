@@ -45,7 +45,6 @@ public class Turret_Tuner extends OpMode {
     public void init() {
         turret1 = hardwareMap.get(Servo.class, "Turret1");
         turret2 = hardwareMap.get(Servo.class, "Turret2");
-//        turret2.getDirection();
         turret = hardwareMap.get(DcMotorEx.class, "Turret");
 
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -64,7 +63,7 @@ public class Turret_Tuner extends OpMode {
         lastTime = currentTime;
 
         double target = targetposition;
-        double currentPos = turret.getCurrentPosition();
+        double currentPos = (turret.getCurrentPosition());
 
         double error = target - currentPos;
 
@@ -74,7 +73,7 @@ public class Turret_Tuner extends OpMode {
         double servoPos = (clipped + 1) / 2.0;
 
         turret1.setPosition(servoPos);
-        turret2.setPosition(servoPos);
+        turret2.setPosition(1.0 - servoPos);
 
         boolean inTolerance = Math.abs(error) < tolerance;
 
@@ -99,6 +98,7 @@ public class Turret_Tuner extends OpMode {
         telemetry.addData("Target Pos", target);
         telemetry.addData("Current Pos", currentPos);
         telemetry.addData("Error", error);
+        telemetry.addData("ticks", turret.getCurrentPosition());
         telemetry.addData("Servo Pos", servoPos);
         telemetry.addData("Stable?", stable);
         telemetry.update();

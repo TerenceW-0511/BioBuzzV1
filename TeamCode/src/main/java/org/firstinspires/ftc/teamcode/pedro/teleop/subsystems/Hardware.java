@@ -59,8 +59,9 @@ public class Hardware {
         limiter = hwMap.get(Servo.class, "Limiter");
         hood = hwMap.get(Servo.class, "Hood");
 
-//        pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
         turret = hwMap.get(DcMotorEx.class, "Turret");
+        turret.setDirection(DcMotorEx.Direction.REVERSE);/// interchangeable
         turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
@@ -68,3 +69,4 @@ public class Hardware {
         turret2 = hwMap.get(Servo.class, "Turret2");
     }
 }
+///Fix: Verify whether turning CCW produces positive or negative ticks. If CCW is negative, invert the target ticks returned by Autoaim (return -reqAngle * TICKS_PER_RADIAN;).

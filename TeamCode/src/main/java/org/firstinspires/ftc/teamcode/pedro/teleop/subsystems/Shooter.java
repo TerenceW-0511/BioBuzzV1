@@ -10,7 +10,7 @@ public class Shooter {
     public static boolean lastDpadleft = false;
     public static boolean lastDpadright = false;
 
-    public static double hoodpos;
+    public static double hoodpos = 0.37;
     public static final double HOOD_MIN = 0.37;
     public static final double HOOD_MAX = 0;
     public static double HOOD_OFFSET = 0.01;;
