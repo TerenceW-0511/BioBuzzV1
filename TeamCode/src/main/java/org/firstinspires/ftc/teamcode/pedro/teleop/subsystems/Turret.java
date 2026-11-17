@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.pedro.teleop.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
+import com.seattlesolvers.solverslib.controller.PDController;
+import com.seattlesolvers.solverslib.controller.PIDController;
 import com.seattlesolvers.solverslib.controller.PIDFController;
 
 public class Turret {
@@ -10,10 +12,18 @@ public class Turret {
     public static final double FULL_TURRET_RANGE_TICKS = 13668.0;
     public static final double TICKS_PER_RADIAN = 6834.0 / Math.PI; // ~2175.33 ticks/rad
 
-    public static double tP = 0.0001;
+    public static final double MAX_TURRET_TICKS = 5800;
+
+    public static double TURRET_SIGN = 1.0;
+
+    public static double Tolerance = 50;
+
+    public static double tP = 0.00045;
+
     public static double tI = 0.0;
-    public static double tD = 0.0;
-    public static double tF = 0.0;
+
+
+    public static double tD = 0.00001;
 
     public static double ticksToDegrees(double ticks) {
         return ticks / TICKS_PER_DEGREE;
@@ -23,31 +33,43 @@ public class Turret {
         return degrees * TICKS_PER_DEGREE;
     }
 
-    private final PIDFController pid = new PIDFController(tP, tI, tD, tF);
+    private final PIDController pid = new PIDController(tP, tI, tD);
+////
 
     public double Autoaim(double robotX, double robotY, double heading, double goalx, double goaly) {
         double dx = goalx - robotX;
         double dy = goaly - robotY;
-        double angle = Math.atan2(dy, dx);
-        double reqAngle = angle - heading;
-        reqAngle = Math.atan2(Math.sin(reqAngle), Math.cos(reqAngle));
-        return reqAngle * TICKS_PER_RADIAN;
+        double angleToTarget = Math.atan2(dy, dx);
+        double relativeAngle = angleToTarget - heading;
+        relativeAngle = Math.atan2(Math.sin(relativeAngle), Math.cos(relativeAngle));
+        return TURRET_SIGN * relativeAngle * TICKS_PER_RADIAN;
     }
 
+    public static double Distance(double botX, double botY, double goalX, double goalY) {
+        double dx = botX - goalX;
+        double dy = botY - goalY;
+        double distance = Math.hypot(dx, dy);
+        return distance;
+    }
 
     public double Turret_PID(Hardware hardware, double targetTicks) {
         double current = hardware.turret.getCurrentPosition();
-        pid.setPIDF(tP, tI, tD, tF);
+        targetTicks = Range.clip(targetTicks, -MAX_TURRET_TICKS, MAX_TURRET_TICKS);
+        pid.setPID(tP, tI, tD);
 
         double power = pid.calculate(current, targetTicks);
-        power = Range.clip(power, -1.0, 1.0);
-        double servoPos1 = (power + 1.0) / 2.0;
-        double servoPos2 = 1.0 - servoPos1;
 
+        if (Math.abs(targetTicks - current) < Tolerance) {
+            power = 0;
+        } else {
+            power = Range.clip(power, -1.0, 1.0);
+        }
+
+        double servoPos1 = (power + 1.0) / 2.0;
+        double servoPos2 = servoPos1;
         hardware.turret1.setPosition(servoPos1);
         hardware.turret2.setPosition(servoPos2);
-
-
+        //skibidi
         return power;
     }
 }
