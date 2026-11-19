@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode.pedro.teleop.subsystems;
 
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 public class Hardware {
@@ -13,6 +18,9 @@ public class Hardware {
     public DcMotorEx flywheel;
     public Servo limiter;
 
+    public Servo sintake;
+
+    public Limelight3A ll;
     public Servo hood;
 
     public Servo turret1,turret2;
@@ -60,6 +68,15 @@ public class Hardware {
         hood = hwMap.get(Servo.class, "Hood");
 
         pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
+        pp.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        pp.setOffsets(-3.9093700787401574, -2.317598425196850, DistanceUnit.INCH);
+        pp.setEncoderDirections(
+                GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED
+        );
+        pp.resetPosAndIMU();
+
+        sintake = hwMap.get(Servo.class, "IntakeR");
         turret = hwMap.get(DcMotorEx.class, "Turret");
         turret.setDirection(DcMotorEx.Direction.REVERSE);/// interchangeable
         turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
@@ -67,6 +84,7 @@ public class Hardware {
 
         turret1 = hwMap.get(Servo.class, "Turret1");
         turret2 = hwMap.get(Servo.class, "Turret2");
+
+//        ll = hardwareMap.get(Limelight3A.class, "ll");
     }
 }
-///Fix: Verify whether turning CCW produces positive or negative ticks. If CCW is negative, invert the target ticks returned by Autoaim (return -reqAngle * TICKS_PER_RADIAN;).

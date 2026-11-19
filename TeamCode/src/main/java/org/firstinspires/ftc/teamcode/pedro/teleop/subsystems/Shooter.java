@@ -49,16 +49,40 @@ public class Shooter {
         m1.setPower(curr);
         return currentVel;
     }
-/// 69.4345
-//    public static final TreeMap<Double,Double> rpmLUT = new TreeMap<>(
-//            Map.ofEntries(
-//                    Map.entry(74.5051, 1500.0),
-//                    Map.entry(69.4345,1500.0),
-//                    Map.entry(51.57541835973636,1580.0),
-//                    Map.entry(61.20058168254951,1690.0),
-//                    Map.entry(72.20668678918508, 1890.0),
-//                    Map.entry(85.50943734702756, 2150.0)
-//            )
-//    );
+    public static final TreeMap<Double,Double> rpmLUT = new TreeMap<>(
+            Map.ofEntries(
+                    Map.entry(68.8208, 1575.0),
+                    Map.entry(82.4326,1660.0),
+                    Map.entry(75.4902,1600.0),
+                    Map.entry(83.9807,1650.0),
+                    Map.entry(60.3188, 1525.0),
+                    Map.entry(51.7581, 2150.0)
+            )
+    );
+    public static double rpmComp(double dist) {
+
+        if (dist <= rpmLUT.firstKey()) return rpmLUT.firstEntry().getValue();
+        if (dist >= rpmLUT.lastKey())  return rpmLUT.lastEntry().getValue();
+
+        Map.Entry<Double, Double> lower = rpmLUT.floorEntry(dist);
+        Map.Entry<Double, Double> upper = rpmLUT.ceilingEntry(dist);
+
+        if (lower == null || upper == null) {
+            return rpmLUT.lastEntry().getValue();
+        }
+
+        if (lower.getKey().equals(upper.getKey())) {
+            return lower.getValue();
+        }
+
+        double x0 = lower.getKey();
+        double y0 = lower.getValue();
+        double x1 = upper.getKey();
+        double y1 = upper.getValue();
+
+        double t = (dist - x0) / (x1 - x0);
+        double newtarget = y0 + t * (y1 - y0);
+        return newtarget;
+    }
 }
 
