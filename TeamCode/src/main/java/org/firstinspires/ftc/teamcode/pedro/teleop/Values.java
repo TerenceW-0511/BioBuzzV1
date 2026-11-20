@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.pedro.teleop;
 
 public class Values {
     /// 360 = 13,668.13;57.72, 56.13
-    public static double goalX = 84.72, goalY = 56.13;
+    public static boolean farGoal = false;
+
+    public static double goalX = 0, goalY = 0;
+    public static final double FAR_ON = 74.0, FAR_OFF = 66.0;
     public static Modes mode = Modes.INTAKING;
     public static Team team = Team.BLUE;
     public static boolean init = true,rumble=false;

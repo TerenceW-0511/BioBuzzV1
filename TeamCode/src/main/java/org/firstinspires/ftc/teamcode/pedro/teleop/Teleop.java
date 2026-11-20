@@ -27,6 +27,7 @@ public class Teleop extends OpMode {
     private Timing.Stopwatch stopwatch;
 
     private Follower robot;
+    double angle1 = 0.8; ///range is 0.8 0.9 and 1.0
     double angle = 0.75;
     private Turret turret;
 
@@ -43,18 +44,22 @@ public class Teleop extends OpMode {
         hardware.hood.setPosition(Values.HOOD_MAX);
         double pos = turret.Turret_PID(hardware, target_zero);
         telemetry.update();
+        hardware.sintake.setPosition(angle);
         robot.update();
         robot.setPose(new Pose(144, 0, Math.toRadians(-180)));
+        Values.farGoal = false;
     }
 
     @Override
     public void init_loop() {
+        telemetry.addData("team :",Values.team);
+        telemetry.addData("angle :",angle1);
+
         if (gamepad1.leftBumperWasPressed()) {
             Values.team = Values.Team.BLUE;
         } else if (gamepad1.rightBumperWasPressed()) {
             Values.team = Values.Team.RED;
         }
-        telemetry.addData("Selected Team", Values.team);
     }
     @Override
     public void start() {
@@ -65,35 +70,46 @@ public class Teleop extends OpMode {
 //            hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
 //            lastTeam = Values.team;
 //        }
+        hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
+        hardware.ll.start();
     }
 
 
     @Override
     public void loop() {
+        hardware.sintake.setPosition(angle);
+        hardware.flower.setPosition(0.8);
+        robot.update();
 //        if (gamepad1.startWasPressed) {
 //            Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
 //            // On the fly Pose creation, we dont recommend this for Autonomous. Only accepts radians for heading
 //            follower.setPose(cornerPose); // overrides our pose
 //        }
-        hardware.sintake.setPosition(angle);
-        double botx = hardware.pp.getPosX(DistanceUnit.INCH);
-        double boty = hardware.pp.getPosY(DistanceUnit.INCH);
-        double botheading = hardware.pp.getHeading(AngleUnit.RADIANS);
+        double botx = robot.pose().x();
+        double boty = robot.pose().y();
+        double botheading = robot.pose().heading();
+//        double botx = hardware.pp.getPosX(DistanceUnit.INCH);
+//        double boty = hardware.pp.getPosY(DistanceUnit.INCH);
+//        double botheading = hardware.pp.getHeading(AngleUnit.RADIANS);
+        if (!Values.farGoal && boty > Values.FAR_ON) {
+            Values.farGoal = true;
+        } else if (Values.farGoal && boty < Values.FAR_OFF) {
+            Values.farGoal = false;
+        }
         if (Values.team == Values.Team.BLUE) {
-            if (boty > 70) {
-                Values.goalY = 84.0;
-                Values.goalX = 84.0;
-            } else if (boty < 70) {
-                Values.goalY = 60.0;
-                Values.goalX = 84.0;
+            Values.goalX = 84.0;
+            if (Values.farGoal) {
+                Values.goalY =  83.0;
+            } else {
+                Values.goalY =  52.0;
             }
-        } else if (Values.team == Values.Team.RED) {
-            if (boty > 70) {
-                Values.goalY = 60.0;
-                Values.goalX = 72.0;
-            } else if (boty < 70) {
-                Values.goalY = 60.0;
-                Values.goalX = 60.0;
+
+        } else {
+            Values.goalX = 57.56;
+            if (Values.farGoal) {
+                Values.goalY =  88.0;
+            } else {
+                Values.goalY =  58.0;
             }
         }
         robot.manual(
@@ -188,7 +204,6 @@ public class Teleop extends OpMode {
             double currentVel = shooter.flywheel(hardware.flywheel, targetVel);
             double target_zero = 0;
 //            double pos = turret.Turret_PID(hardware, target_zero);
-            robot.update();
             double pos = turret.Turret_PID(hardware, targetTurretTicks);
             double turretEncoder = hardware.turret.getCurrentPosition();
         ///flywheel
@@ -200,17 +215,21 @@ public class Teleop extends OpMode {
             telemetry.addData("mode", Values.mode);
             telemetry.addData("dist",Turret.Distance(botx, boty, Values.goalX, Values.goalY));
             ///turret
-            telemetry.addData("heading",(botheading));
-            telemetry.addData("bearing heading", Turret.ticksToDegrees(turret.Autoaim(botx, boty, botheading, Values.goalX, Values.goalY)));
             telemetry.addData("target turret",targetTurretTicks);
             telemetry.addData("Turret current", turretEncoder);
             telemetry.addData("Turret pos", pos);
+            telemetry.addData("heading",(botheading));
             telemetry.addData("x", botx);
             telemetry.addData("y", boty);
-            telemetry.update();
+            telemetry.addData("bearing heading", Turret.ticksToDegrees(turret.Autoaim(botx, boty, botheading, Values.goalX, Values.goalY)));
+            telemetry.addData("robot pose", robot.pose());
+//            telemetry.addData("connection info",hardware.ll.getConnectionInfo());
+
+        telemetry.update();
 
         }
     }
-
+///tmrw check Telemetry robot.getPose() and hardware.pp.getPosX/Y/Heading .
+/// also Spin 360° in place if x,y within ~1 in of start and If  ~9 in, offsets are wrong
 /// TODO LIST - limelight,hood comp?,rpm comp,autoaim,flower mech?
 /// THE NEW SERVOS ARE IntakeR IntakeL Flower

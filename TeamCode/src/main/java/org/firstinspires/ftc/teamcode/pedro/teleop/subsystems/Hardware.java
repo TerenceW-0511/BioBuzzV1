@@ -17,6 +17,7 @@ public class Hardware {
     public DcMotorEx intake, transfer;
     public DcMotorEx flywheel;
     public Servo limiter;
+    public Servo flower;
 
     public Servo sintake;
 
@@ -35,8 +36,8 @@ public class Hardware {
         rightFront = hwMap.get(DcMotorEx.class, "FR");
         rightBack = hwMap.get(DcMotorEx.class, "BR");
 
-        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
-        rightBack.setDirection(DcMotorEx.Direction.REVERSE);
+//        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+//        rightBack.setDirection(DcMotorEx.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -74,8 +75,7 @@ public class Hardware {
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
-        pp.resetPosAndIMU();
-
+        flower = hwMap.get(Servo.class, "Flower");
         sintake = hwMap.get(Servo.class, "IntakeR");
         turret = hwMap.get(DcMotorEx.class, "Turret");
         turret.setDirection(DcMotorEx.Direction.REVERSE);/// interchangeable
@@ -85,6 +85,6 @@ public class Hardware {
         turret1 = hwMap.get(Servo.class, "Turret1");
         turret2 = hwMap.get(Servo.class, "Turret2");
 
-//        ll = hardwareMap.get(Limelight3A.class, "ll");
+        ll = hwMap.get(Limelight3A.class, "ll");
     }
 }
