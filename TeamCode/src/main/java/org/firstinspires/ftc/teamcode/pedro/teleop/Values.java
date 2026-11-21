@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode.pedro.teleop;
 public class Values {
     /// 360 = 13,668.13;57.72, 56.13
     public static boolean farGoal = false;
+    public static double offsetAngle=0,txRaw=0,tx = 0,lastTxRaw=0, llOffset = 0;
+    public static boolean txStale = false;
+    public static double turretOverride=0;
+    public static double angle1 = 1.0; ///range is 0.8 0.9 and 1.0
+    public static double angle = 0.73;
 
     public static double goalX = 0, goalY = 0;
     public static final double FAR_ON = 74.0, FAR_OFF = 66.0;

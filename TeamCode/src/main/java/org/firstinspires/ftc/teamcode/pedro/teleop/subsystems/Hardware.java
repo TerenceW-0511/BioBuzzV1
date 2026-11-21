@@ -70,11 +70,6 @@ public class Hardware {
 
         pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
         pp.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pp.setOffsets(-3.9093700787401574, -2.317598425196850, DistanceUnit.INCH);
-        pp.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED
-        );
         flower = hwMap.get(Servo.class, "Flower");
         sintake = hwMap.get(Servo.class, "IntakeR");
         turret = hwMap.get(DcMotorEx.class, "Turret");

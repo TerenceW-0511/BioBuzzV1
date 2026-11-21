@@ -21,4 +21,5 @@ dependencies {
     implementation 'com.pedropathing:tuning:1.0.1'
     implementation "org.solverslib:core:0.3.6" /// replaced implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "org.solverslib:pedroPathing:0.3.6"
+    implementation 'com.pedropathing.ivy:pedro:1.1.1'
 }

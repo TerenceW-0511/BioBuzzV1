@@ -51,12 +51,12 @@ public class Shooter {
     }
     public static final TreeMap<Double,Double> rpmLUT = new TreeMap<>(
             Map.ofEntries(
-                    Map.entry(83.9807,1650.0),
-                    Map.entry(82.4326,1660.0),
+                    Map.entry(83.9807,1655.0),
+                    Map.entry(82.4326,1650.0),
                     Map.entry(75.4902,1600.0),
                     Map.entry(68.8208, 1575.0),
                     Map.entry(60.3188, 1525.0),
-                    Map.entry(51.7581, 1500.0)
+                    Map.entry(51.7581, 1510.0)
             )
     );
     public static double rpmComp(double dist) {

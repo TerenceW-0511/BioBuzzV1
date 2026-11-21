@@ -27,8 +27,6 @@ public class Teleop extends OpMode {
     private Timing.Stopwatch stopwatch;
 
     private Follower robot;
-    double angle1 = 0.8; ///range is 0.8 0.9 and 1.0
-    double angle = 0.75;
     private Turret turret;
 
     @Override
@@ -38,22 +36,22 @@ public class Teleop extends OpMode {
         flywheel = new Shooter();
         turret = new Turret();
         robot = Constants.create(hardwareMap);
-        stopwatch = new Timing.Stopwatch();
+        stopwatch = new Timing.Stopwatch(TimeUnit.MILLISECONDS);
         hardware.turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         hardware.turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         hardware.hood.setPosition(Values.HOOD_MAX);
         double pos = turret.Turret_PID(hardware, target_zero);
         telemetry.update();
-        hardware.sintake.setPosition(angle);
+        hardware.sintake.setPosition(Values.angle);
         robot.update();
-        robot.setPose(new Pose(144, 0, Math.toRadians(-180)));
+        robot.setPose(new Pose(8.1765, 5.9465, Math.toRadians(0)));
         Values.farGoal = false;
     }
 
     @Override
     public void init_loop() {
         telemetry.addData("team :",Values.team);
-        telemetry.addData("angle :",angle1);
+        telemetry.addData("angle :",Values.angle1);
 
         if (gamepad1.leftBumperWasPressed()) {
             Values.team = Values.Team.BLUE;
@@ -70,15 +68,15 @@ public class Teleop extends OpMode {
 //            hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
 //            lastTeam = Values.team;
 //        }
-        hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
         hardware.ll.start();
+        hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
     }
 
 
     @Override
     public void loop() {
-        hardware.sintake.setPosition(angle);
-        hardware.flower.setPosition(0.8);
+        hardware.sintake.setPosition(Values.angle);
+        hardware.flower.setPosition(Values.angle1);
         robot.update();
 //        if (gamepad1.startWasPressed) {
 //            Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
@@ -122,7 +120,8 @@ public class Teleop extends OpMode {
                 boty,
                 botheading,
                 Values.goalX,
-                Values.goalY
+                Values.goalY,
+                hardware.ll
         );
         if (gamepad1.circle){
             hardware.pp.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
@@ -139,7 +138,7 @@ public class Teleop extends OpMode {
                 break;
             case SHOOTING:
                 hardware.limiter.setPosition(Values.LIMITER_OPEN);
-                if (stopwatch.elapsedTime() > 0.2) {
+                if (stopwatch.elapsedTime() > 200) {
                     hardware.intake.setPower(1);
                     hardware.transfer.setPower(1);
                 }
@@ -207,7 +206,8 @@ public class Teleop extends OpMode {
             double pos = turret.Turret_PID(hardware, targetTurretTicks);
             double turretEncoder = hardware.turret.getCurrentPosition();
         ///flywheel
-            telemetry.addData("servo val", angle);
+            telemetry.addData("connection info",hardware.ll.getConnectionInfo());
+            telemetry.addData("servo val", Values.angle);
             telemetry.addData("Target", targetVel);
             telemetry.addData("Current", currentVel);
             telemetry.addData("limiter pos", hardware.limiter.getPosition());
@@ -221,7 +221,6 @@ public class Teleop extends OpMode {
             telemetry.addData("heading",(botheading));
             telemetry.addData("x", botx);
             telemetry.addData("y", boty);
-            telemetry.addData("bearing heading", Turret.ticksToDegrees(turret.Autoaim(botx, boty, botheading, Values.goalX, Values.goalY)));
             telemetry.addData("robot pose", robot.pose());
 //            telemetry.addData("connection info",hardware.ll.getConnectionInfo());
 
