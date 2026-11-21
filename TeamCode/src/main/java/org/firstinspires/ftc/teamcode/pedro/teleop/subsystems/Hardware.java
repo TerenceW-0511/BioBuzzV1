@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -61,7 +62,7 @@ public class Hardware {
 
 
         flywheel = hwMap.get(DcMotorEx.class, "Flywheel");
-        flywheel.setDirection(DcMotorEx.Direction.REVERSE);
+        flywheel.setDirection(DcMotorEx.Direction.FORWARD);
         flywheel.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -70,7 +71,7 @@ public class Hardware {
 
         pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
         pp.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        flower = hwMap.get(Servo.class, "Flower");
+//        flower = hwMap.get(Servo.class, "Flower");
         sintake = hwMap.get(Servo.class, "IntakeR");
         turret = hwMap.get(DcMotorEx.class, "Turret");
         turret.setDirection(DcMotorEx.Direction.REVERSE);/// interchangeable

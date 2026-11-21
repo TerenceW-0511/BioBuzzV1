@@ -40,24 +40,20 @@ public class Shooter {
         public static double flywheelTarget=1500;
     }
     public static void manualRelocalize(Follower follower) {
-        double y = follower.pose().y();
-
+        double x = follower.pose().x();
+        double y =  follower.pose().y();
         double halfLength = 8.1765;
         double halfWidth  = 5.9465;
 
-        if (Values.team == Values.Team.BLUE) {
-            if (y > 50) {
-                follower.setPose(new Pose(halfLength + 8.0, 77.5, Math.toRadians(180)));
-            } else {
-                follower.setPose(new Pose(144.0 - 23.5 - halfLength, halfWidth, Math.toRadians(0)));
+            if (y < 70 && x > 70) {
+                follower.setPose(new Pose(110.05, 5.46, Math.toRadians(180)));
+            } else if (x > 70 && y > 70){
+                follower.setPose(new Pose(110.93,134.63, Math.toRadians(180)));
+            } else if (x < 70 && y < 70) {
+                follower.setPose(new Pose(31.28, 5.46, Math.toRadians(0)));
+            } else if (y > 70 && x <70) {
+                follower.setPose(new Pose(31.63, 134.45, Math.toRadians(0)));
             }
-        } else {
-            if (y > 50) {
-                follower.setPose(new Pose(144.0 - (halfLength + 8.0), 77.5, Math.toRadians(0)));
-            } else {
-                follower.setPose(new Pose(23.5 + halfLength, halfWidth, Math.toRadians(180)));
-            }
-        }
 
         Values.filteredX = 0;
         Values.turretOverride = 0;

@@ -44,14 +44,19 @@ public class Teleop extends OpMode {
         telemetry.update();
         hardware.sintake.setPosition(Values.angle);
         robot.update();
-        robot.setPose(new Pose(8.1765, 5.9465, Math.toRadians(0)));
+//        robot.setPose(new Pose(6.66, 100, Math.toRadians(90)));
+//        robot.setPose(new Pose(113.57, 9.52, Math.toRadians(-90)));
+        robot = Constants.create(hardwareMap);
+
+        robot.setPose(new Pose(6.26, 78.24, Math.toRadians(-90))); // Fallback
+
         Values.farGoal = false;
     }
 
     @Override
     public void init_loop() {
         telemetry.addData("team :",Values.team);
-        telemetry.addData("angle :",Values.flowerRampOff);
+//        telemetry.addData("angle :",Values.flowerRampOff);
 
         if (gamepad1.leftBumperWasPressed()) {
             Values.team = Values.Team.BLUE;
@@ -63,6 +68,7 @@ public class Teleop extends OpMode {
     public void start() {
         robot.manual();
         stopwatch.start();
+
         hardware.pp.update();
 //        if (Values.team != lastTeam) {
 //            hardware.ll.pipelineSwitch(Values.team == Values.Team.RED ? 1 : 2);
@@ -76,7 +82,7 @@ public class Teleop extends OpMode {
     @Override
     public void loop() {
         hardware.sintake.setPosition(Values.angle);
-        hardware.flower.setPosition(Values.flowerRampOff);
+//        hardware.flower.setPosition(Values.flowerRampOff);
         robot.update();
 //        if (gamepad1.startWasPressed) {
 //            Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
@@ -123,12 +129,12 @@ public class Teleop extends OpMode {
                 Values.goalY,
                 hardware.ll
         );
-        if (gamepad1.circle){
-            hardware.pp.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
+        if (gamepad1.circle){///135.07, 4.58
+//            hardware.pp.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
+            hardware.pp.setPosition(new Pose2D(DistanceUnit.INCH, 128.20, 136.21, AngleUnit.DEGREES, 0));
+
         }
         if (gamepad1.x){
-            Values.tx=0;
-
             hardware.ll.pause();
             hardware.ll.start();
 

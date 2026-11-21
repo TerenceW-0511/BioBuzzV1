@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.pedro.teleop;
 
+import com.pedropathing.math.Pose;
+
 public class Values {
     /// 360 = 13,668.13;57.72, 56.13
     public static boolean farGoal = false;
@@ -8,7 +10,8 @@ public class Values {
     public static double turretOverride=0;
     public static double flowerRampOff = 0.36; ///range is 0.8 0.9 and 1.0
     public static double flowerRampOn = 0.56;
-    public static double angle = 0.75;
+    public static double angle = 0.85;
+    public static Pose robotPose = null;
     public static double filteredX = 0;
 
     public static double goalX = 0, goalY = 0;

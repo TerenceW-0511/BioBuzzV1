@@ -35,13 +35,15 @@ public class red_auton_simple extends OpMode {
     private double flywheelTarget = 0, currentVel = 0, lastTurretTarget = 0, dist = 0;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
-    private final Pose start = poseFactory.of(68.3903, 4.5826, 180);
-    private final Pose grab = poseFactory.of(8.7746, 6.2198, 180);
-    private final Pose park = poseFactory.of(6.5113, 97.5835, -45.9476);
-    private final Pose parkcontrol = poseFactory.of(36.4744, 66.6125, 0);
 
-    public Path path1() { return Paths.line(start, grab).constant(grab); }
-    public Path path2() { return Paths.curve(grab, parkcontrol, park).reverseTangent(); }
+    private final Pose start = poseFactory.of(58.2908, 8, 90);
+    private final Pose path1 = poseFactory.of(6.66, 96.2653, 90);
+    private final Pose path1Control1 = poseFactory.of(6.4993, 60.2971, 0);
+
+    public Path path1() {
+        return Paths.curve(start, path1Control1, path1).constant(path1);
+    }
+
 
     public void setPathState(int newState) {
         pathState = newState;
@@ -50,35 +52,24 @@ public class red_auton_simple extends OpMode {
 
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case 0: // STEP 1: SCORE PRELOAD
-                spinning = true; // Spools up flywheel in loop()
-
-                // Spool up for SPOOL_UP_MS, then open limiter & run transfer to shoot
-                if (pathTimer.milliseconds() > SPOOL_UP_MS && pathTimer.milliseconds() <= SPOOL_UP_MS + PRELOAD_BURST_MS) {
+            case 0:
+                spinning = true;
+                if (pathTimer.milliseconds()> 2800) {
+                    hardware.limiter.setPosition(Values.LIMITER_OPEN);
+                }
+                if (pathTimer.milliseconds()> 3200) {
                     shoot();
-                } else if (pathTimer.milliseconds() > SPOOL_UP_MS + PRELOAD_BURST_MS) {
-                    // Preload finished -> stop shooter & start driving to garden
+                }
+
+                if (pathTimer.milliseconds() > 4000) {
                     stopShooting();
                     spinning = false;
                     follower.follow(path1());
-                    setPathState(1);
-                } else {
-                    stopShooting();
+                    setPathState(2);
                 }
                 break;
 
-            case 1: // STEP 2: AT GARDEN -> Intake briefly, then drive to park
-                if (!follower.isBusy()) {
-                    intake();
-                    if (pathTimer.milliseconds() > GARDEN_DWELL_MS) {
-                        move();
-                        follower.follow(path2());
-                        setPathState(2);
-                    }
-                }
-                break;
-
-            case 2: // STEP 3: ARRIVED AT PARK -> Shut down mechanisms
+            case 2:
                 if (!follower.isBusy()) {
                     move();
                     spinning = false;
@@ -91,10 +82,8 @@ public class red_auton_simple extends OpMode {
         }
     }
 
-    /** Opens limiter and runs intake + transfer to feed pollen into flywheel. */
     public void shoot() {
-        hardware.limiter.setPosition(Values.LIMITER_OPEN);
-        hardware.flower.setPosition(Values.flowerRampOff);
+//        hardware.flower.setPosition(Values.flowerRampOff);
         hardware.intake.setPower(1.0);
         hardware.transfer.setPower(1.0);
     }
@@ -111,7 +100,7 @@ public class red_auton_simple extends OpMode {
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
         hardware.intake.setPower(1.0);
         hardware.transfer.setPower(1.0);
-        hardware.flower.setPosition(Values.flowerRampOff);
+//        hardware.flower.setPosition(Values.flowerRampOff);
     }
 
     /** Holds mechanisms in neutral/closed position while driving. */
@@ -119,7 +108,7 @@ public class red_auton_simple extends OpMode {
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
         hardware.intake.setPower(0);
         hardware.transfer.setPower(0);
-        hardware.flower.setPosition(Values.flowerRampOff);
+//        hardware.flower.setPosition(Values.flowerRampOff);
     }
 
     @Override
@@ -142,9 +131,9 @@ public class red_auton_simple extends OpMode {
         Shooter.hoodpos = 0.37;
 
         hardware.sintake.setPosition(Values.angle);
-        hardware.flower.setPosition(Values.flowerRampOff);
+//        hardware.flower.setPosition(Values.flowerRampOff);
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
-        hardware.hood.setPosition(0.37);
+//        hardware.hood.setPosition(0.37);
         hardware.intake.setPower(0);
         hardware.transfer.setPower(0);
         hardware.flywheel.setPower(0);
@@ -168,6 +157,13 @@ public class red_auton_simple extends OpMode {
         hardware.ll.start();
         setPathState(0);
     }
+    @Override
+    public void stop() {
+        if (follower != null) {
+            Values.robotPose = follower.pose();
+        }
+        // ... rest of stop code ...
+    }
 
     @Override
     public void loop() {
@@ -188,6 +184,7 @@ public class red_auton_simple extends OpMode {
             currentVel = Math.abs(hardware.flywheel.getVelocity());
         }
 
+
         hardware.hood.setPosition(Range.clip(Shooter.hoodpos, 0.01, 0.37));
 
         // Turret Auto-Aim & PID Loop
@@ -201,6 +198,7 @@ public class red_auton_simple extends OpMode {
         telemetry.addData("Path State", pathState);
         telemetry.addData("x", botX);
         telemetry.addData("y", botY);
+        telemetry.addData("heading", botHeading);
         telemetry.addData("dist", dist);
         telemetry.addData("flywheel tgt/cur", flywheelTarget + " / " + currentVel);
         telemetry.addData("turret err", lastTurretTarget - hardware.turret.getCurrentPosition());
