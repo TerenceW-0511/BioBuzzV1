@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode.pedro.teleop.subsystems;
 
+import com.pedropathing.follower.Follower;
+import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.seattlesolvers.solverslib.controller.PIDFController;
+
+import org.firstinspires.ftc.teamcode.pedro.teleop.Values;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,6 +38,30 @@ public class Shooter {
 
 
         public static double flywheelTarget=1500;
+    }
+    public static void manualRelocalize(Follower follower) {
+        double y = follower.pose().y();
+
+        double halfLength = 8.1765;
+        double halfWidth  = 5.9465;
+
+        if (Values.team == Values.Team.BLUE) {
+            if (y > 50) {
+                follower.setPose(new Pose(halfLength + 8.0, 77.5, Math.toRadians(180)));
+            } else {
+                follower.setPose(new Pose(144.0 - 23.5 - halfLength, halfWidth, Math.toRadians(0)));
+            }
+        } else {
+            if (y > 50) {
+                follower.setPose(new Pose(144.0 - (halfLength + 8.0), 77.5, Math.toRadians(0)));
+            } else {
+                follower.setPose(new Pose(23.5 + halfLength, halfWidth, Math.toRadians(180)));
+            }
+        }
+
+        Values.filteredX = 0;
+        Values.turretOverride = 0;
+        Values.tx = 0;
     }
 
     public double flywheel(DcMotorEx m1, double target) {

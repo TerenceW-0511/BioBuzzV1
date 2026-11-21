@@ -26,8 +26,8 @@ public class Turret {
     public static final double FULL_TURRET_RANGE_TICKS = 13668.0;
     public static final double TICKS_PER_RADIAN = 6834.0 / Math.PI; // ~2175.33 ticks/rad
 
-    public static final double MAX_TURRET_TICKS = 6000;
-    public static final double MIN_TURRET_TICKS = -5500;
+    public static final double MAX_TURRET_TICKS = 6100;
+    public static final double MIN_TURRET_TICKS = -5000;
     public static double Tolerance = 50;
 
     public static double tP = 0.000375;
