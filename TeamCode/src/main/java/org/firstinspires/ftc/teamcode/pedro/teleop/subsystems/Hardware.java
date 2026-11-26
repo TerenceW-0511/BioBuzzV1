@@ -18,7 +18,7 @@ public class Hardware {
     public DcMotorEx intake, transfer;
     public DcMotorEx flywheel;
     public Servo limiter;
-    public Servo flower;
+    public Servo flower; // not on the robot and never mapped. Only here so Red_auton still builds, delete once Red_auton stops using it
 
     public Servo sintake;
 
@@ -30,8 +30,14 @@ public class Hardware {
     public DcMotorEx turret;
     public GoBildaPinpointDriver pp;
 
+//    / Autos and tuners: zeros the turret encoder, so the turret has to point straight forward at INIT. */
     public Hardware(HardwareMap hwMap) {
-        /// Drive train
+        this(hwMap, true);
+    }
+
+//    zeroTurret = false keeps the encoder count from the last OpMode (teleop after auto),
+//    so the turret's zero stays at real center instead of wherever auto left it.*/
+    public Hardware(HardwareMap hwMap, boolean zeroTurret) {/// Drive train
         leftFront = hwMap.get(DcMotorEx.class, "FL");
         leftBack = hwMap.get(DcMotorEx.class, "BL");
         rightFront = hwMap.get(DcMotorEx.class, "FR");
@@ -71,11 +77,12 @@ public class Hardware {
 
         pp = hwMap.get(GoBildaPinpointDriver.class,"pinpoint");
         pp.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-//        flower = hwMap.get(Servo.class, "Flower");
         sintake = hwMap.get(Servo.class, "IntakeR");
         turret = hwMap.get(DcMotorEx.class, "Turret");
         turret.setDirection(DcMotorEx.Direction.REVERSE);/// interchangeable
-        turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        if (zeroTurret) {
+            turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        }
         turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         turret1 = hwMap.get(Servo.class, "Turret1");

@@ -31,12 +31,16 @@ public class Turret_Tuner extends OpMode {
 
     public static double tolerance = 50;
 
-    private Servo turret1, turret2,flower,intake;
+    public static double position = 0;
+
+
+    private Servo turret1, turret2,flower,intake, limiter,hood;
     private DcMotorEx turret;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private ElapsedTime timer = new ElapsedTime();
     private double lastTime = 0;
+
 
     PIDController pid = new PIDController(0,0,0);
 
@@ -47,7 +51,10 @@ public class Turret_Tuner extends OpMode {
         turret = hardwareMap.get(DcMotorEx.class, "Turret");
         flower = hardwareMap.get(Servo.class, "Flower");
         intake = hardwareMap.get(Servo.class,"IntakeR");
+        limiter = hardwareMap.get(Servo.class, "Limiter");
+        hood = hardwareMap.get(Servo.class, "Hood");
 
+        intake.setPosition(angle1);
 
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -56,6 +63,8 @@ public class Turret_Tuner extends OpMode {
 
     @Override
     public void loop() {
+//        limiter.setPosition(range);
+        limiter.setPosition(position);
         intake.setPosition(angle1);
         flower.setPosition(angle);
         double target = targetposition;

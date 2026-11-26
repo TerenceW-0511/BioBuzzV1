@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedro.teleop;
+package org.firstinspires.ftc.teamcode.pedro.teleop.Autons;
 
 import com.pedropathing.api.Paths;
 import com.pedropathing.api.PoseFactory;
@@ -12,12 +12,13 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.pedro.teleop.Values;
 import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Hardware;
 import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.pedro.teleop.subsystems.Turret;
 
-@Autonomous(name = "Red Auton Simple", group = "Autonomous")
-public class red_auton_simple extends OpMode {
+@Autonomous(name = "Blue_auton", group = "Autonomous")
+public class Blue_auton_simple extends OpMode {
     private Follower follower;
     public Hardware hardware;
     public Shooter shooter;
@@ -36,14 +37,13 @@ public class red_auton_simple extends OpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(58.2908, 8, 90);
-    private final Pose path1 = poseFactory.of(6.66, 96.2653, 90);
-    private final Pose path1Control1 = poseFactory.of(6.4993, 60.2971, 0);
+    private final Pose start = poseFactory.of(84.7229, 132.5834, -90);
+    private final Pose path1 = poseFactory.of(133.358, 40.0529, -90);
+    private final Pose path1Control1 = poseFactory.of(126.5012, 102.0599, -90);
 
     public Path path1() {
         return Paths.curve(start, path1Control1, path1).constant(path1);
     }
-
 
     public void setPathState(int newState) {
         pathState = newState;
@@ -83,7 +83,6 @@ public class red_auton_simple extends OpMode {
     }
 
     public void shoot() {
-//        hardware.flower.setPosition(Values.flowerRampOff);
         hardware.intake.setPower(1.0);
         hardware.transfer.setPower(1.0);
     }
@@ -100,7 +99,6 @@ public class red_auton_simple extends OpMode {
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
         hardware.intake.setPower(1.0);
         hardware.transfer.setPower(1.0);
-//        hardware.flower.setPosition(Values.flowerRampOff);
     }
 
     /** Holds mechanisms in neutral/closed position while driving. */
@@ -108,7 +106,6 @@ public class red_auton_simple extends OpMode {
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
         hardware.intake.setPower(0);
         hardware.transfer.setPower(0);
-//        hardware.flower.setPosition(Values.flowerRampOff);
     }
 
     @Override
@@ -123,15 +120,14 @@ public class red_auton_simple extends OpMode {
         hardware.turret.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         hardware.turret.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        Values.team = Values.Team.RED;
-        Values.farGoal = false;
-        Values.goalX = 57.56;
-        Values.goalY = 58.0;
+        Values.team = Values.Team.BLUE;   // was RED (copied from red), which teleop then inherited
+        Values.farGoal = true;            // starts at y > 74, same goal teleop would pick here
+        Values.goalX = 84.0;              // blue goal from teleop (red's 57.56, 58 is the other hive)
+        Values.goalY = 83.0;
         Shooter.flywheelOffset = 0;
         Shooter.hoodpos = 0.37;
 
         hardware.sintake.setPosition(Values.angle);
-//        hardware.flower.setPosition(Values.flowerRampOff);
         hardware.limiter.setPosition(Values.LIMITER_CLOSED);
 //        hardware.hood.setPosition(0.37);
         hardware.intake.setPower(0);
@@ -153,7 +149,7 @@ public class red_auton_simple extends OpMode {
     public void start() {
         turret.filteredX = 0;
         Values.turretOverride = 0;
-        hardware.ll.pipelineSwitch(1); // RED Limelight pipeline
+        hardware.ll.pipelineSwitch(2); // BLUE Limelight pipeline
         hardware.ll.start();
         setPathState(0);
     }
@@ -162,7 +158,11 @@ public class red_auton_simple extends OpMode {
         if (follower != null) {
             Values.robotPose = follower.pose();
         }
-        // ... rest of stop code ...
+
+        shooter.flywheel(hardware.flywheel, 0);
+        hardware.intake.setPower(0);
+        hardware.transfer.setPower(0);
+        hardware.limiter.setPosition(Values.LIMITER_CLOSED);
     }
 
     @Override

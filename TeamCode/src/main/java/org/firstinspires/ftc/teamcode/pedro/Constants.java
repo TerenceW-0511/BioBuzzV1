@@ -33,7 +33,6 @@ public class Constants {
         c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
         c.offsetUnits.set(DistanceUnit.INCH);
-        c.resetMode.set(PinpointLocalizer.ResetMode.NONE); // <-- ADD THIS LINE
     });
 //    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
 //        c.name.set("pinpoint");
@@ -46,7 +45,7 @@ public class Constants {
 //        c.offsetUnits.set(DistanceUnit.INCH);
 //    });
 
-//    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
+    //    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
 //        c.name.set("pinpoint");
 //        c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 //        c.xPodOffset.set(-2.4077196196308286);
